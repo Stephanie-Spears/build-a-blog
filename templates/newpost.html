@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>NEW POST</h1>
+<form action="/newpost" method="post">
+  <table>
+    <tr>
+      <!-- <th>Blog Title</th> -->
+      <td><label for="title">Title</label></td>
+      <td><input type="text" name="title" value="{{ title }}"></td>
+    </tr>
+    <tr>
+      <!-- <th>Blog Body</th> -->
+      <td><label for="body">Body</label></td>
+      <td><input type="text" name="body" value="{{ body }}"></td>
+    </tr>
+  </table>
+  <input type="submit" value="Submit Blog">
+
+</form>
+
+{% endblock %}
