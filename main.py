@@ -51,6 +51,9 @@ class Blog(db.Model):
             pub_date = datetime.utcnow()
         self.pub_date = pub_date
 
+    def __repr__ (self):
+        return '<\nID: %s\nTitle: %s\nBody: %s\nPub Date: %s\n>' % (self.id, self.title, self.body, self.pub_date)
+        
 
 @app.route('/blog', methods=["POST", "GET"])
 def blog():
