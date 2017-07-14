@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, redirect, render_template, session, flash
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -37,30 +38,28 @@ def static_file_hash(filename):
   return int(os.stat(filename).st_mtime) # or app.config['last_build_timestamp'] or md5(filename) or etc...
 
 
-
 class Blog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(120))
+    pub_date = db.Column(db.DateTime)
 
-    def __init__(self, title, body):
+    def __init__(self, title, body, pub_date = None):
         self.title = title
         self.body = body
+        if pub_date is None:
+            pub_date = datetime.utcnow()
+        self.pub_date = pub_date
 
 
 @app.route('/blog', methods=["POST", "GET"])
 def blog():
-    # if request.method == "POST":
-    #     title = request.form['title']
-    #     body = request.form['body']
-    #     return render_template('blog.html', title=title, body=body)
-
     if request.args.get('id'):
         post_id = request.args.get('id')
         post = Blog.query.filter_by(id=post_id).first()
         return render_template('blog.html', post=post)
 
-    blogs = Blog.query.all()
+    blogs = Blog.query.order_by(Blog.pub_date.desc()).all()
     return render_template('blog.html', blogs=blogs)
 
 
@@ -73,14 +72,13 @@ def new_post():
         blog_body = request.form['body']
         blog_id = request.form['blog_id']
 
-        if (not blog_title) and (not blog_body):
-            error = "empty_blog_error"
-            return render_template('newpost.html', error=error, title=blog_title, body=blog_body)
-        elif (not blog_body):
-            error = "body_error"
-            return render_template('newpost.html', error=error, title=blog_title, body=blog_body)
-        elif (not blog_title):
-            error = "title_error"
+        if (not blog_title) or (not blog_body):
+            if not blog_title:
+                error = "title_error"
+            if not blog_body:
+                error = "body_error"
+            if (not blog_title) and (not blog_body):
+                error = "empty_blog_error"
             return render_template('newpost.html', error=error, title=blog_title, body=blog_body)
 
         elif error == None:
@@ -88,7 +86,6 @@ def new_post():
             db.session.add(new_blog)
             db.session.commit()
             return redirect("/blog?id=" + str(new_blog.id))
-            # return render_template('blog.html', blog=new_blog)
     return render_template('newpost.html', error=error)
 
 
