@@ -1,38 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 
+
 <div id="newpost-form">
   <h1 class="text-center">Add a Blog Entry</h1>
   <form method="post">
     <div class="form-group">
       <label for="title">Title</label>
       <input class="form-control" placeholder="Example Blog Title" type="text" name="title" value="{{ title }}">
-      <small id="titleHelp" class="form-text text-danger">Please Enter a Blog Title</small>
+      {% if error == "title_error" or error == "empty_blog_error" %}
+      <small class="form-text text-danger">Please Enter a Blog Title</small>
+      {% endif %}
     </div>
     <div class="form-group">
       <label for="body">Body</label>
-      <textarea class="form-control" name="body" rows="8" cols="80" placeholder="Example Blog Text" value="{{ body }}"></textarea>
-      <small id="bodyHelp" class="form-text text-danger">Please Enter a Blog Body</small>
+      <textarea class="form-control" placeholder="Example Blog Body" type="text" name="body" rows="8" cols="80">{{ body }}</textarea>
+      {% if error == "body_error" or error == "empty_blog_error" %}
+        <small class="form-text text-danger">Please Enter a Blog Body</small>
+      {% endif %}
     </div>
+    <input type="hidden" name="blog_id" value="{{ blog_id }}">
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
 
 
 {% endblock %}
-<!-- <table class="table-bordered">
-  <tr>
-    <p class="error form-control-static">Needs a Title</p>
-
-    <td><label for="title">Title</label></td>
-    <td><input class="form-control" type="text" name="title" value="{{ title }}"></td>
-  </tr>
-  <tr>
-    <p class="error form-control-static">Needs a Body</p>
-
-    <td><label for="body">Body</label></td>
-    <td><input class="form-control-lg" type="text" name="body" value="{{ body }}"></td>
-  </tr>
-
-</table>
-<input type="submit" class="btn btn-primary" value="Submit Blog"> -->

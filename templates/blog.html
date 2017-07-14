@@ -2,23 +2,32 @@
 {% block content %}
 
 
-<div id="blog-list">
-  {% if blogs|length == 0 %}
-  <p>No Blogs Yet</p>
-  {% else %}
-    <ul>
-      {% for blog in blogs %}
-      <li>
-        <a href="blog?id={{ blog.id }}">{{blog.title}}</a>
-        <form action="/blog" method="POST">
-          <input type="hidden" name="blog-id" value="{{ blog.id }}">
-        </form>
-        <hr>
-        {{blog.body}}
-      </li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-  <hr />
-</div>
+{% if blogs: %}
+  <div class="container" id="blog-list">
+    {% for blog in blogs: %}
+    <h2>
+      <a href="/blog?id={{ blog.id }}">{{blog.title}}</a>
+    </h2>
+    <p>{{blog.body}}</p>
+    <hr>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% if post: %}
+  <div class="container" id="blog-post">
+    <style>
+      #blog-list {
+        display: hidden;
+      }
+      #blog-post {
+        display: block;
+      }
+      </style>
+    <h1>{{post.title}}</h1>
+    <p>{{post.body}}</p>
+  </div>
+{% endif %}
+
+
 {% endblock %}
